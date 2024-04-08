@@ -10,6 +10,7 @@ namespace TheatricalPlayersRefactoringKata
         public string Print(Invoice invoice, Dictionary<string, Play> plays)
         {
             PrintHTML(invoice, plays);
+
             var (totalPrice, volumeCredits) = CalculateTotalPrice(invoice, plays);
             CultureInfo cultureInfo = new CultureInfo("en-US");
 
@@ -23,7 +24,7 @@ namespace TheatricalPlayersRefactoringKata
                 result += String.Format(cultureInfo, "  {0}: {1:C} ({2} seats)\n", play.Name, Convert.ToDecimal(performancePrice / 100), performance.Audience);
             }
 
-            result += String.Format(cultureInfo, "Amount owed is {0:C}\n", Convert.ToDecimal(totalPrice / 100));
+            result += String.Format(cultureInfo, "Amount owed is {0:C}\n", totalPrice);
             result += String.Format("You earned {0} credits\n", volumeCredits);
 
             return result;
@@ -32,7 +33,6 @@ namespace TheatricalPlayersRefactoringKata
         public string PrintHTML(Invoice invoice, Dictionary<string, Play> plays)
         {
             var (totalPrice, volumeCredits) = CalculateTotalPrice(invoice, plays);
-            CultureInfo cultureInfo = new CultureInfo("en-US");
 
             StringBuilder htmlBuilder = new StringBuilder();
             htmlBuilder.Append("<html><body>\n");
@@ -49,11 +49,13 @@ namespace TheatricalPlayersRefactoringKata
             htmlBuilder.AppendFormat("<p>Amount owed is: <strong>{0:C}</strong></p>\n", Convert.ToDecimal(totalPrice / 100));
             htmlBuilder.AppendFormat("<p>You earned <strong>{0}</strong> credits</p>\n", volumeCredits);
             htmlBuilder.Append("</body></html>");
+
             Console.WriteLine(htmlBuilder.ToString());
+
             return htmlBuilder.ToString();
         }
 
-        private static (int, int) CalculateTotalPrice(Invoice invoice, Dictionary<string, Play> plays)
+        private static (decimal, int) CalculateTotalPrice(Invoice invoice, Dictionary<string, Play> plays)
         {
             int totalPrice = 0;
             int volumeCredits = 0;
@@ -70,13 +72,15 @@ namespace TheatricalPlayersRefactoringKata
                 totalPrice += performancePrice;
             }
 
-            return (totalPrice, volumeCredits);
+            var finalPrice = (decimal)totalPrice / 100;
+
+            return (finalPrice, volumeCredits);
         }
 
         private static (Play, int) CalculatePlayPrice(Dictionary<string, Play> plays, Performance performance)
         {
             var play = plays[performance.PlayID];
-            int playPrice = 0;
+            int playPrice;
             switch (play.Type)
             {
                 case "tragedy":
