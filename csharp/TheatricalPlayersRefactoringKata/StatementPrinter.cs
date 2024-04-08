@@ -4,14 +4,15 @@ using System.Globalization;
 
 namespace TheatricalPlayersRefactoringKata
 {
-    public class StatementResult
-    {
-        public string Customer { get; set; }
-        public List<Play> Plays { get; set; }
-        public List<Performance> Performances { get; set; }
-        public int TotalAmount { get; set; }
-        public int VolumeCredits { get; set; }
-    }
+    // public class StatementResult
+    // {
+    //     public string Customer { get; set; }
+    //     public List<Play> Plays { get; set; }
+    //     public List<Performance> Performances { get; set; }
+    //     public int TotalAmount { get; set; }
+    //     public int VolumeCredits { get; set; }
+
+    // }
 
     public class StatementPrinter
     {
@@ -59,7 +60,5 @@ namespace TheatricalPlayersRefactoringKata
             result += String.Format("You earned {0} credits\n", volumeCredits);
             return result;
         }
-
-
     }
 }
