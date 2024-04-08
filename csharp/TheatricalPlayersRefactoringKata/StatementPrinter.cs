@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Text;
 
 namespace TheatricalPlayersRefactoringKata
 {
@@ -8,6 +9,7 @@ namespace TheatricalPlayersRefactoringKata
     {
         public string Print(Invoice invoice, Dictionary<string, Play> plays)
         {
+            PrintHTML(invoice, plays);
             var (totalPrice, volumeCredits) = CalculateTotalPrice(invoice, plays);
             CultureInfo cultureInfo = new CultureInfo("en-US");
 
@@ -25,6 +27,30 @@ namespace TheatricalPlayersRefactoringKata
             result += String.Format("You earned {0} credits\n", volumeCredits);
 
             return result;
+        }
+
+        public string PrintHTML(Invoice invoice, Dictionary<string, Play> plays)
+        {
+            var (totalPrice, volumeCredits) = CalculateTotalPrice(invoice, plays);
+            CultureInfo cultureInfo = new CultureInfo("en-US");
+
+            StringBuilder htmlBuilder = new StringBuilder();
+            htmlBuilder.Append("<html><body>\n");
+            htmlBuilder.AppendFormat("<h1>Statement for {0}</h1>\n", invoice.Customer);
+            htmlBuilder.Append("<ul>\n");
+
+            foreach (var performance in invoice.Performances)
+            {
+                var (play, performancePrice) = CalculatePlayPrice(plays, performance);
+                htmlBuilder.AppendFormat("<li>{0}: {1:C} ({2} seats)</li>\n", play.Name, Convert.ToDecimal(performancePrice / 100), performance.Audience);
+            }
+
+            htmlBuilder.Append("</ul>\n");
+            htmlBuilder.AppendFormat("<p>Amount owed is: <strong>{0:C}</strong></p>\n", Convert.ToDecimal(totalPrice / 100));
+            htmlBuilder.AppendFormat("<p>You earned <strong>{0}</strong> credits</p>\n", volumeCredits);
+            htmlBuilder.Append("</body></html>");
+            Console.WriteLine(htmlBuilder.ToString());
+            return htmlBuilder.ToString();
         }
 
         private static (int, int) CalculateTotalPrice(Invoice invoice, Dictionary<string, Play> plays)
