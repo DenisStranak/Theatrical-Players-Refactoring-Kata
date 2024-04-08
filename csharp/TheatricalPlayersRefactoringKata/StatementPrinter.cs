@@ -4,6 +4,15 @@ using System.Globalization;
 
 namespace TheatricalPlayersRefactoringKata
 {
+    public class StatementResult
+    {
+        public string Customer { get; set; }
+        public List<Play> Plays { get; set; }
+        public List<Performance> Performances { get; set; }
+        public int TotalAmount { get; set; }
+        public int VolumeCredits { get; set; }
+    }
+
     public class StatementPrinter
     {
         public string Print(Invoice invoice, Dictionary<string, Play> plays)
@@ -13,21 +22,23 @@ namespace TheatricalPlayersRefactoringKata
             var result = string.Format("Statement for {0}\n", invoice.Customer);
             CultureInfo cultureInfo = new CultureInfo("en-US");
 
-            foreach(var perf in invoice.Performances) 
+            foreach (var perf in invoice.Performances)
             {
                 var play = plays[perf.PlayID];
                 var thisAmount = 0;
-                switch (play.Type) 
+                switch (play.Type)
                 {
                     case "tragedy":
                         thisAmount = 40000;
-                        if (perf.Audience > 30) {
+                        if (perf.Audience > 30)
+                        {
                             thisAmount += 1000 * (perf.Audience - 30);
                         }
                         break;
                     case "comedy":
                         thisAmount = 30000;
-                        if (perf.Audience > 20) {
+                        if (perf.Audience > 20)
+                        {
                             thisAmount += 10000 + 500 * (perf.Audience - 20);
                         }
                         thisAmount += 300 * perf.Audience;
@@ -48,5 +59,7 @@ namespace TheatricalPlayersRefactoringKata
             result += String.Format("You earned {0} credits\n", volumeCredits);
             return result;
         }
+
+
     }
 }
